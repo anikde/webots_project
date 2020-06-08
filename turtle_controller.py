@@ -5,7 +5,8 @@ from controller import Robot
 from controller import Supervisor
 import numpy as np
 import scipy.spatial.distance as distance
-# create the Robot instance.
+# create the Robot instance of supervisor type.
+# the supervisor node has to be true
 robot = Supervisor()
 
 # get the time step of the current world.
