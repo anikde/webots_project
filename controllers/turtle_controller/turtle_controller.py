@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""turtle_controller."""
+"""take1_controller3 controller."""
 
+# You may need to import some classes of the controller module. Ex:
+#  from controller import Robot, Motor, DistanceSensor
 from controller import Robot
 from controller import Supervisor
 import numpy as np
 import scipy.spatial.distance as distance
-# create the Robot instance of supervisor type.
-# the supervisor node has to be true
+# create the Robot instance.
 robot = Supervisor()
 
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
 
-#DEF string have to be created for the robot as well as for the target
 robot_node = robot.getFromDef("burger")
 trans = robot_node.getField("translation")
 rot = robot_node.getField ("rotation")
@@ -55,8 +55,7 @@ class pidcontroller:
         self.prev_error = error
         return np.multiply(self.kp, error) + np.multiply(self.ki, self.cumm_error) + np.multiply(self.kd, dE)
         
-#L and R are specific to robot kinematics
-#vl and vr are specific for different drive model; this is for differential drive model
+
 def burgermotordriver(v, w):
     L = 0.16
     R = 0.066
@@ -93,7 +92,11 @@ while robot.step(timestep) != -1:
     goal_pos = np.array(goal_trans.getSFVec3f()[0:3:2])
     goal_pos[1] = -1 * goal_pos[1]
     
-    #desired heading is angle towards the goal
+    # print (orientation, robot_heading, np.degrees(robot_heading), np.degrees(orientation)  )
+    
+    # robot_heading = boundingangle(orientation)
+    
+    
     D_heading = np.arctan2(goal_pos[1] - robot_pos[1], goal_pos[0] - robot_pos[0])
     desired_heading = boundingangle( D_heading)
     
@@ -106,6 +109,7 @@ while robot.step(timestep) != -1:
     pos_error = distance.euclidean(goal_pos, robot_pos)
     angular_error = boundingangle( np.array (desired_heading - robot_heading))
     
+    # print(D_heading, np.degrees(desired_heading), angular_error)
      
     if (pos_error < 0.02):
         leftmotor.setVelocity (0)
@@ -120,5 +124,15 @@ while robot.step(timestep) != -1:
 
        
     print( state, reference,np.degrees(robot_heading),pos_error, angular_error, [vr], [vl],u[0],u[1])
+    # print (robot_pos, robot_heading)
+    # print (orh)
+    # print (desired_heading)
+    # Read the sensors:
+    # Enter here functions to read sensor data, like:
+    #  val = ds.getValue()
 
+    # Process sensor data here.
+
+    # Enter here functions to send actuator commands, like:
+    #  motor.setPosition(10.0)
     pass
